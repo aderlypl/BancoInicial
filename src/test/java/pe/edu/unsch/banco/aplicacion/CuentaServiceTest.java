@@ -1,6 +1,8 @@
 package pe.edu.unsch.banco.aplicacion;
 
 import org.junit.jupiter.api.Test;
+import pe.edu.unsch.banco.aplicacion.puertos.CuentaUseCase;
+import pe.edu.unsch.banco.aplicacion.puertos.MovimientoRepository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class CuentaServiceTest {
     @Test
     void flujoCompletoRegistraMovimientos() {
         RepositorioEnMemoria repositorio = new RepositorioEnMemoria();
-        CuentaService servicio = new CuentaService(repositorio);
+        CuentaUseCase servicio = new CuentaService(repositorio);
 
         servicio.registrar("Ana", new BigDecimal("1000"));
         servicio.depositar(new BigDecimal("200"));
@@ -37,7 +39,7 @@ public class CuentaServiceTest {
     @Test
     void noReemplazaLaCuentaActiva() {
         RepositorioEnMemoria repositorio = new RepositorioEnMemoria();
-        CuentaService servicio = new CuentaService(repositorio);
+        CuentaUseCase servicio = new CuentaService(repositorio);
         servicio.registrar("Ana", new BigDecimal("1000"));
 
         assertThrows(IllegalStateException.class,
@@ -49,7 +51,7 @@ public class CuentaServiceTest {
     @Test
     void operacionRechazadaNoRegistraMovimiento() {
         RepositorioEnMemoria repositorio = new RepositorioEnMemoria();
-        CuentaService servicio = new CuentaService(repositorio);
+        CuentaUseCase servicio = new CuentaService(repositorio);
         servicio.registrar("Ana", new BigDecimal("1000"));
 
         assertThrows(IllegalArgumentException.class, () -> servicio.retirar(new BigDecimal("2000")));
@@ -58,7 +60,7 @@ public class CuentaServiceTest {
 
     @Test
     void sinCuentaNoSePuedeOperar() {
-        CuentaService servicio = new CuentaService(new RepositorioEnMemoria());
+        CuentaUseCase servicio = new CuentaService(new RepositorioEnMemoria());
         assertThrows(IllegalStateException.class, servicio::consultar);
     }
 }
