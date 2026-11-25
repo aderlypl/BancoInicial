@@ -5,6 +5,7 @@ import pe.edu.unsch.banco.aplicacion.puertos.CuentaUseCase;
 import pe.edu.unsch.banco.aplicacion.puertos.MovimientoRepository;
 import pe.edu.unsch.banco.dominio.CuentaBancaria;
 import pe.edu.unsch.banco.infraestructura.salida.ArchivoMovimientoRepository;
+import pe.edu.unsch.banco.infraestructura.salida.MemoriaMovimientoRepository;
 
 import java.io.UncheckedIOException;
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public class Main {
     public static void main(String[] args) {
         // Elegir el adaptador de salida: SOLO se cambia esta linea.
         MovimientoRepository repositorio = new ArchivoMovimientoRepository("movimientos.txt"); // Prueba A
+        // MovimientoRepository repositorio = new MemoriaMovimientoRepository();               // Prueba B
 
         CuentaUseCase servicio = new CuentaService(repositorio);
         Scanner scanner = new Scanner(System.in);
@@ -70,6 +72,11 @@ public class Main {
                 System.out.println("Error al guardar el movimiento: " + e.getMessage());
             }
         } while (opcion != 5);
+
+        if (repositorio instanceof MemoriaMovimientoRepository memoria) {
+            System.out.println("Movimientos guardados en memoria (se pierden al cerrar):");
+            memoria.listarMovimientos().forEach(m -> System.out.println("  " + m));
+        }
     }
 
     private static int leerOpcion(Scanner scanner) {
